@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Boolnol</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&display=swap">
+<style>
+:root {
+  --bg: #2b3241; --fg: #ffffff; --muted: #ffffff; --line: rgba(255,255,255,0.35);
+  --f-bg: #000000; --f-fg: #ffffff; --f-line: #4a4a4a;
+  color-scheme: dark;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; min-height: 100%; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: "Cormorant Garamond", Garamond, Georgia, "Times New Roman", serif; font-weight: 400; -webkit-font-smoothing: antialiased; }
+main { flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 56px 0 48px; text-align: center; }
+h1 { font-size: clamp(1.5rem, 4.5vw, 2.1rem); letter-spacing: 0.22em; margin: 0 0 14px; padding: 0 0 14px 0.22em; font-weight: 300; color: #ffffff; border-bottom: 1px solid var(--line); min-width: min(calc(100% - 48px), 300px); align-self: center; }
+.tagline { align-self: center; padding: 0 24px; color: #ffffff; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.04em; max-width: 40ch; line-height: 1.6; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.tagline:hover { opacity: 0.8; }
+.sect { margin-top: 56px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.sect-title { margin: 0; padding: 0 24px 10px; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.14em; border-bottom: 1px solid var(--line); }
+.window { width: min(1000px, calc(100% - 48px)); margin: 28px auto 0; padding: 20px; border: 1px solid var(--line); text-align: left; }
+.window-empty { margin: 0; padding: 24px 0; text-align: center; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.06em; }
+.entity { border: 1px solid var(--line); }
+.entity-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.entity-name { margin: 0; font-size: 1.05rem; font-weight: 400; letter-spacing: 0.14em; }
+.entity-status { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.06em; }
+.more { color: #ffffff; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.more:hover { opacity: 0.8; }
+.entity iframe { display: block; width: 100%; height: 460px; border: 0; background: #ffffff; }
+a:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
+[hidden] { display: none !important; }
+.back { align-self: flex-start; display: inline-flex; margin: 20px 24px 0; padding: 6px 0; line-height: 0; border-bottom: 0; }
+.back:hover { opacity: 0.75; }
+footer { background: #000000; color: var(--f-fg); padding: 32px 24px 28px; font-family: "Cormorant Garamond", Garamond, Georgia, serif; }
+.inner { max-width: 640px; margin: 0 auto; }
+nav { display: flex; gap: 28px; justify-content: center; margin-bottom: 28px; }
+nav a { color: var(--f-fg); text-decoration: none; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.12em; padding: 4px 0; border-bottom: 1px solid transparent; }
+nav a:hover { border-bottom-color: var(--f-fg); }
+.acc { border: 1px solid var(--f-line); border-radius: 0; }
+.acc-title { padding: 10px 14px; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.08em; }
+.panel { padding: 0 14px 12px; }
+.panel h2 { font-size: 0.9rem; margin: 2px 0 4px; font-weight: 300; letter-spacing: 0.06em; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; font-weight: 300; }
+th { font-weight: 400; letter-spacing: 0.06em; }
+td, th { padding: 7px 8px; border-top: 1px solid var(--f-line); text-align: left; }
+td:last-child, th:last-child { text-align: right; }
+.copy { text-align: center; margin: 22px 0 0; font-size: 0.8rem; font-weight: 300; letter-spacing: 0.06em; color: #ffffff; }
+</style>
+</head>
+<body>
+<a class="back" id="back" href="#home" aria-label="Back to Home" title="Back to Home" hidden><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M27 7H1M7 1L1 7l6 6"/></svg></a>
+<main id="home">
+  <h1>Boolnol</h1>
+  <a class="tagline" href="#about">Boolnol is an independent parent organization...</a>
+  <section class="sect">
+    <h2 class="sect-title">Announcements</h2>
+    <div class="window">
+      <p class="window-empty">No announcements at this time.</p>
+    </div>
+  </section>
+  <section class="sect">
+    <h2 class="sect-title">Entity Directory</h2>
+    <div class="window">
+    <div class="entity">
+      <div class="entity-head">
+        <h3 class="entity-name">PEFFUS</h3>
+        <span class="entity-status">Current Status: Active, <a class="more" href="https://hnx.github.io/PEFFUS" target="_blank" rel="noopener noreferrer">Click For More</a></span>
+      </div>
+      <iframe src="https://hnx.github.io/PEFFUS" title="PEFFUS" loading="lazy" referrerpolicy="no-referrer"></iframe>
+    </div>
+    </div>
+  </section>
+</main>
+<main id="about" hidden aria-label="About"></main>
+<main id="updates" hidden aria-label="Updates"></main>
+
+<footer>
+  <div class="inner">
+    <nav aria-label="Footer">
+      <a href="#about">About</a>
+      <a href="#updates">Updates</a>
+    </nav>
+    <section class="acc">
+      <div class="acc-title">Connect With Boolnol</div>
+      <div class="panel">
+        <h2>Boolnol Digital Media Identities</h2>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Website</th><th>Identifier</th></tr></thead>
+            <tbody>
+              <tr><td>X.com</td><td>X.com/Boolnol</td></tr>
+              <tr><td>YouTube.com</td><td>Youtube.com/@Boolnol</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="panel">
+        <h2>Contact Us</h2>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Purpose</th><th>ID</th></tr></thead>
+            <tbody><tr><td>General Inquiries</td><td></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <p class="copy">&copy; 2026 Boolnol. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+function route() {
+  var h = (location.hash || "").replace("#", "");
+  if (h !== "about" && h !== "updates") h = "home";
+  ["home", "about", "updates"].forEach(function (id) {
+    document.getElementById(id).hidden = (id !== h);
+  });
+  document.getElementById("back").hidden = (h === "home");
+  document.title = h === "home" ? "Boolnol" : (h === "about" ? "About | Boolnol" : "Updates | Boolnol");
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
