@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Boolnis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&display=swap">
+<style>
+:root {
+  --bg: #2b3241; --fg: #ffffff; --muted: #ffffff; --line: rgba(255,255,255,0.35);
+  --f-bg: #000000; --f-fg: #ffffff; --f-line: #4a4a4a;
+  color-scheme: dark;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; min-height: 100%; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: "Cormorant Garamond", Garamond, Georgia, "Times New Roman", serif; font-weight: 400; -webkit-font-smoothing: antialiased; }
+main { flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 56px 0 48px; text-align: center; }
+h1 { font-size: clamp(1.5rem, 4.5vw, 2.1rem); letter-spacing: 0.22em; margin: 0 0 14px; padding: 0 0 14px 0.22em; font-weight: 300; color: #ffffff; border-bottom: 1px solid var(--line); min-width: min(calc(100% - 48px), 300px); align-self: center; }
+.tagline { align-self: center; padding: 0 24px; color: #ffffff; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.04em; max-width: 52ch; line-height: 1.6; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.tagline:hover { opacity: 0.8; }
+.sect { margin-top: 56px; padding: 22px 0 28px; background: #000000; border: 0; }
+.sect-title { margin: 0; padding: 0 24px 10px; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.14em; border-bottom: 1px solid var(--f-line); }
+.window { width: min(1000px, calc(100% - 48px)); margin: 28px auto 0; padding: 20px; background: #000000; border: 1px solid var(--f-line); text-align: left; }
+.window-empty { margin: 0; padding: 24px 0; text-align: center; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.06em; }
+.entity { position: relative; background: #000000; border: 1px solid var(--f-line); }
+.entity-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; padding: 12px 56px 12px 16px; border-bottom: 1px solid var(--f-line); }
+.entity-name { margin: 0; font-size: 1.05rem; font-weight: 400; letter-spacing: 0.14em; }
+.entity-title { display: flex; align-items: center; gap: 10px; }
+.info-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1px solid #ffffff; color: #ffffff; text-decoration: none; font-size: 0.85rem; font-style: italic; line-height: 1; }
+.info-btn:hover { background: #ffffff; color: #000000; }
+.entity-status { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.06em; }
+.more { color: #ffffff; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.more:hover { opacity: 0.8; }
+.entity iframe { display: block; width: 100%; height: 460px; border: 0; background: #ffffff; }
+.entity-status { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; }
+.fs-btn { position: absolute; top: 10px; right: 12px; font-style: normal; }
+.carousel { overflow: hidden; }
+.track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.car-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+.car-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; background: #000000; color: #ffffff; border: 1px solid #ffffff; cursor: pointer; padding: 0; }
+.car-btn:hover:not(:disabled) { background: #ffffff; color: #000000; }
+.car-btn:disabled { opacity: 0.35; cursor: default; }
+.car-count { min-width: 52px; text-align: center; font-size: 0.9rem; font-weight: 300; letter-spacing: 0.1em; }
+.fs { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; background: #000000; }
+.fs-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(8px + env(safe-area-inset-top, 0px)) 14px 8px; border-bottom: 1px solid var(--f-line); }
+.fs-title { font-size: 1rem; font-weight: 400; letter-spacing: 0.14em; }
+.fs-tools { display: flex; align-items: center; gap: 8px; }
+.fs-tools button, .fs-tools a { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; background: #000000; color: #ffffff; border: 1px solid #ffffff; font: inherit; font-size: 1rem; text-decoration: none; cursor: pointer; }
+.fs-tools button:hover, .fs-tools a:hover { background: #ffffff; color: #000000; }
+.fs-zoom { min-width: 52px; text-align: center; font-size: 0.9rem; letter-spacing: 0.06em; }
+.fs-view { position: relative; flex: 1; overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.fs-view iframe { position: absolute; top: 0; left: 0; border: 0; background: #ffffff; transform-origin: 0 0; }
+.modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,0,0.75); }
+.dialog { width: min(520px, 100%); max-height: 100%; overflow: auto; background: #000000; border: 1px solid var(--f-line); text-align: left; }
+.dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--f-line); }
+.dialog-head h2 { margin: 0; font-size: 1.1rem; font-weight: 400; letter-spacing: 0.14em; }
+.close { color: #ffffff; text-decoration: none; font-size: 1.6rem; line-height: 1; padding: 0 4px; }
+.close:hover { opacity: 0.75; }
+.dialog-body { margin: 0; padding: 22px 18px 26px; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.06em; }
+a:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
+[hidden] { display: none !important; }
+.back { align-self: flex-start; display: inline-flex; margin: 20px 24px 0; padding: 6px 0; line-height: 0; border-bottom: 0; }
+.back:hover { opacity: 0.75; }
+footer { background: #000000; color: var(--f-fg); padding: 32px 24px 28px; font-family: "Cormorant Garamond", Garamond, Georgia, serif; }
+.inner { max-width: 640px; margin: 0 auto; }
+.f-name { margin: 0 0 8px; text-align: center; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.22em; }
+.f-desc { margin: 0 auto 24px; max-width: 52ch; text-align: center; font-size: 0.9rem; font-weight: 300; letter-spacing: 0.04em; line-height: 1.6; }
+nav { display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: center; margin-bottom: 28px; }
+nav a { color: var(--f-fg); text-decoration: none; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.12em; padding: 4px 0; border-bottom: 1px solid transparent; }
+nav a:hover { border-bottom-color: var(--f-fg); }
+nav .na { color: var(--f-fg); font-size: 0.95rem; font-weight: 300; letter-spacing: 0.12em; padding: 4px 0; cursor: default; }
+.acc { border: 1px solid var(--f-line); border-radius: 0; }
+.acc-title { padding: 10px 14px; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.08em; }
+.panel { padding: 0 14px 12px; }
+.panel h2 { font-size: 0.9rem; margin: 2px 0 4px; font-weight: 300; letter-spacing: 0.06em; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; font-weight: 300; }
+th { font-weight: 400; letter-spacing: 0.06em; }
+td, th { padding: 7px 8px; border-top: 1px solid var(--f-line); text-align: left; }
+td:last-child, th:last-child { text-align: right; }
+.copy { text-align: center; margin: 22px 0 0; font-size: 0.8rem; font-weight: 300; letter-spacing: 0.06em; color: #ffffff; }
+.about-win { line-height: 1.7; font-size: 1rem; font-weight: 300; letter-spacing: 0.04em; }
+.about-win p { margin: 0 0 18px; }
+.about-win p:last-child { margin-bottom: 0; }
+.about-list { margin: 0 0 18px; padding: 0 0 0 20px; }
+.about-list li { margin: 0 0 10px; }
+.about-list li:last-child { margin-bottom: 0; }
+.about-list strong { font-weight: 500; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<a class="back" id="back" href="#home" aria-label="Back to Home" title="Back to Home" hidden><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M27 7H1M7 1L1 7l6 6"/></svg></a>
+<main id="home">
+  <h1>Boolnis</h1>
+  <a class="tagline" href="#about">Boolnis is an independent, privately held organization that owns and oversees a portfolio of subsidiaries and other entities.</a>
+  <section class="sect">
+    <h2 class="sect-title">Announcements</h2>
+    <div class="window">
+      <p class="window-empty">No announcements at this time.</p>
+    </div>
+  </section>
+  <section class="sect">
+    <h2 class="sect-title">Entity Directory</h2>
+    <div class="window">
+    <div class="carousel">
+      <div class="track" id="track">
+      <div class="slide" data-ent="peffus">
+        <div class="entity">
+          <div class="entity-head">
+            <div class="entity-title"><h3 class="entity-name">PEFFUS</h3><a class="info-btn" href="#peffus-info" aria-label="Info About PEFFUS" title="Info About PEFFUS">i</a></div>
+            <span class="entity-status">Current Status: Active, <a class="more" href="https://hnx.github.io/PEFFUS" target="_blank" rel="noopener noreferrer">Visit Website</a></span>
+            <a class="info-btn fs-btn" href="#peffus-fullscreen" aria-label="Full screen" title="Full screen"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8"/></svg></a>
+          </div>
+          <iframe src="https://hnx.github.io/PEFFUS" title="PEFFUS" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+      <div class="slide" data-ent="zon-institute">
+        <div class="entity">
+          <div class="entity-head">
+            <div class="entity-title"><h3 class="entity-name">Zon Institute</h3><a class="info-btn" href="#zon-institute-info" aria-label="Info About Zon Institute" title="Info About Zon Institute">i</a></div>
+            <span class="entity-status">Current Status: Active, <a class="more" href="https://hnx.github.io/ZonInstitute" target="_blank" rel="noopener noreferrer">Visit Website</a></span>
+            <a class="info-btn fs-btn" href="#zon-institute-fullscreen" aria-label="Full screen" title="Full screen"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8"/></svg></a>
+          </div>
+          <iframe src="https://hnx.github.io/ZonInstitute" title="Zon Institute" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+      <div class="slide" data-ent="orkinis">
+        <div class="entity">
+          <div class="entity-head">
+            <div class="entity-title"><h3 class="entity-name">Orkinis</h3><a class="info-btn" href="#orkinis-info" aria-label="Info About Orkinis" title="Info About Orkinis">i</a></div>
+            <span class="entity-status">Current Status: Active, <a class="more" href="https://hnx.github.io/Orkinis" target="_blank" rel="noopener noreferrer">Visit Website</a></span>
+            <a class="info-btn fs-btn" href="#orkinis-fullscreen" aria-label="Full screen" title="Full screen"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8"/></svg></a>
+          </div>
+          <iframe src="https://hnx.github.io/Orkinis" title="Orkinis" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="car-nav">
+      <button type="button" class="car-btn" id="car-prev" aria-label="Previous entity" title="Previous"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,2 4,7 9,12"/></svg></button>
+      <span class="car-count" id="car-count">1 / 3</span>
+      <button type="button" class="car-btn" id="car-next" aria-label="Next entity" title="Next"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,2 10,7 5,12"/></svg></button>
+    </div>
+    </div>
+  </section>
+</main>
+<main id="about" hidden aria-label="About">
+  <h1>About</h1>
+  <div class="window about-win">
+    <p>Boolnis is an independent, privately held organization that owns, holds, and oversees a portfolio of subsidiaries and other associated entities.</p>
+    <p>Its portfolio may comprise both legally registered and unregistered entities, operating in various capacities and across different fields.</p>
+    <p>An entity held by Boolnis may take various forms, including, but not limited to:</p>
+    <ul class="about-list">
+      <li><strong>Companies and Organizations:</strong> Legally registered or unregistered business entities, organizations, and institutional structures.</li>
+      <li><strong>Identities and Brands:</strong> Brands, trademarks, trade names, projects, and other distinct identities.</li>
+      <li><strong>Assets and Holdings:</strong> Physical or digital assets, intellectual property, properties, and other forms of holdings.</li>
+      <li><strong>Other Entities:</strong> Any other independent or subordinate structure, undertaking, or holding recognized and maintained within Boolnis&rsquo;s organizational portfolio.</li>
+    </ul>
+    <p>Boolnis is currently not legally registered as a formal business or organizational entity.</p>
+  </div>
+</main>
+<main id="updates" hidden aria-label="Updates"></main>
+
+<div class="fs" id="peffus-fs" hidden role="dialog" aria-modal="true" aria-label="Full screen">
+  <div class="fs-bar">
+    <span class="fs-title" id="fs-title"></span>
+    <div class="fs-tools">
+      <button type="button" id="fs-out" aria-label="Zoom out" title="Zoom out">&minus;</button>
+      <span class="fs-zoom" id="fs-zoom">100%</span>
+      <button type="button" id="fs-in" aria-label="Zoom in" title="Zoom in">+</button>
+      <button type="button" id="fs-reset" aria-label="Reset zoom" title="Reset zoom">Reset</button>
+      <a id="fs-close" href="#home" aria-label="Close full screen" title="Close full screen">&times;</a>
+    </div>
+  </div>
+  <div class="fs-view"><iframe id="fs-frame" title="Full screen" referrerpolicy="no-referrer"></iframe></div>
+</div>
+
+<div class="modal" id="peffus-modal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="dialog-head">
+      <h2 id="modal-title"></h2>
+      <a class="close" id="peffus-close" href="#home" aria-label="Close" title="Close">&times;</a>
+    </div>
+    <p class="dialog-body" id="modal-body"></p>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <h2 class="f-name">Boolnis</h2>
+    <p class="f-desc">Boolnis is an independent, privately held organization that owns and oversees a portfolio of subsidiaries and other entities.</p>
+    <nav aria-label="Footer">
+      <a href="#about">About</a>
+      <a href="#updates">Updates</a>
+      <span class="na" aria-disabled="true">Entity Directory</span>
+      <span class="na" aria-disabled="true">Account</span>
+      <span class="na" aria-disabled="true">Privacy &amp; Policy</span>
+    </nav>
+    <section class="acc">
+      <div class="acc-title">Connect With Boolnis</div>
+      <div class="panel">
+        <h2>Boolnis Digital Media Identities</h2>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Website</th><th>Identifier</th></tr></thead>
+            <tbody>
+              <tr><td>X.com</td><td>X.com/Boolnis</td></tr>
+              <tr><td>YouTube.com</td><td>Youtube.com/@Boolnis</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="panel">
+        <h2>Contact Us</h2>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Purpose</th><th>ID</th></tr></thead>
+            <tbody><tr><td>General Inquiries</td><td></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <p class="copy">&copy; 2026 Boolnis. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+var ENT = {
+  "peffus": {
+    "name": "PEFFUS",
+    "url": "https://hnx.github.io/PEFFUS",
+    "info": "PEFFUS is currently an unregistered entity, wholly owned by Boolnis."
+  },
+  "zon-institute": {
+    "name": "Zon Institute",
+    "url": "https://hnx.github.io/ZonInstitute",
+    "info": "Zon Institute is currently an unregistered entity, wholly owned by Boolnis."
+  },
+  "orkinis": {
+    "name": "Orkinis",
+    "url": "https://hnx.github.io/Orkinis",
+    "info": "Orkinis is currently an unregistered entity, wholly owned by Boolnis."
+  }
+};
+var zoom = 1;
+function setZoom(z) {
+  zoom = Math.max(0.5, Math.min(3, Math.round(z * 100) / 100));
+  var f = document.getElementById("fs-frame");
+  f.style.width = (100 / zoom) + "%";
+  f.style.height = (100 / zoom) + "%";
+  f.style.transform = "scale(" + zoom + ")";
+  document.getElementById("fs-zoom").textContent = Math.round(zoom * 100) + "%";
+}
+function route() {
+  var h = (location.hash || "").replace("#", "");
+  var m = /^(peffus|zon-institute|orkinis)-(info|fullscreen)$/.exec(h);
+  var ent = m ? ENT[m[1]] : null;
+  var popup = !!m && m[2] === "info";
+  var full = !!m && m[2] === "fullscreen";
+  if (h !== "about" && h !== "updates") h = "home";
+  ["home", "about", "updates"].forEach(function (id) {
+    document.getElementById(id).hidden = (id !== h);
+  });
+  document.getElementById("back").hidden = (h === "home");
+  var modal = document.getElementById("peffus-modal");
+  if (popup) {
+    document.getElementById("modal-title").textContent = "Info About " + ent.name;
+    document.getElementById("modal-body").textContent = ent.info;
+  }
+  modal.hidden = !popup;
+  if (popup) document.getElementById("peffus-close").focus();
+  var fs = document.getElementById("peffus-fs");
+  if (full) {
+    var fr = document.getElementById("fs-frame");
+    if (fs.hidden || fr.getAttribute("data-url") !== ent.url) {
+      setZoom(1);
+      fr.setAttribute("data-url", ent.url);
+      fr.src = ent.url;
+      fr.title = ent.name + " full screen";
+    }
+    document.getElementById("fs-title").textContent = ent.name;
+  }
+  fs.hidden = !full;
+  document.body.style.overflow = full ? "hidden" : "";
+  if (full) document.getElementById("fs-close").focus();
+  document.title = full ? ent.name + " | Boolnis" : popup ? "Info About " + ent.name + " | Boolnis" : (h === "home" ? "Boolnis" : (h === "about" ? "About | Boolnis" : "Updates | Boolnis"));
+  updateCarousel();
+}
+var track = document.getElementById("track");
+var prev = document.getElementById("car-prev");
+var next = document.getElementById("car-next");
+function carIndex() {
+  var w = track.clientWidth;
+  return w ? Math.round(track.scrollLeft / w) : 0;
+}
+function updateCarousel() {
+  var n = track.children.length, i = carIndex();
+  document.getElementById("car-count").textContent = (i + 1) + " / " + n;
+  prev.disabled = (i <= 0);
+  next.disabled = (i >= n - 1);
+}
+function slideBy(d) {
+  track.scrollTo({ left: (carIndex() + d) * track.clientWidth, behavior: "smooth" });
+}
+prev.addEventListener("click", function () { slideBy(-1); });
+next.addEventListener("click", function () { slideBy(1); });
+track.addEventListener("scroll", updateCarousel);
+window.addEventListener("resize", updateCarousel);
+window.addEventListener("hashchange", route);
+document.getElementById("peffus-modal").addEventListener("click", function (e) {
+  if (e.target === this) location.hash = "home";
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && /-(info|fullscreen)$/.test(location.hash)) location.hash = "home";
+});
+document.getElementById("fs-in").addEventListener("click", function () { setZoom(zoom + 0.25); });
+document.getElementById("fs-out").addEventListener("click", function () { setZoom(zoom - 0.25); });
+document.getElementById("fs-reset").addEventListener("click", function () { setZoom(1); });
+route();
+</script>
+</body>
+</html>
